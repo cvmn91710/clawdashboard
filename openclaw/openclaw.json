@@ -1,0 +1,34 @@
+{
+  "agents": {
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "name": "Main Agent",
+        "workspace": "/home/node/openclaw/workspace/main"
+      },
+      {
+        "id": "dev",
+        "name": "Dev Agent",
+        "workspace": "/home/node/openclaw/workspace/dev"
+      },
+      {
+        "id": "ops",
+        "name": "Ops Agent",
+        "workspace": "/home/node/openclaw/workspace/ops"
+      }
+    ]
+  },
+  "hooks": {
+    "enabled": true,
+    "token": "${OPENCLAW_HOOKS_TOKEN}",
+    "path": "/hooks",
+    "defaultSessionKey": "hook:clawdashboard",
+    "allowRequestSessionKey": false,
+    "allowedAgentIds": ["main", "dev", "ops"]
+  },
+  "gateway": {
+    "mode": "local",
+    "bind": "lan"
+  }
+}

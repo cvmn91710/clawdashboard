@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id         String   @id
+  label      String
+  workspace  String?
+  isDefault  Boolean  @default(false) @map("is_default")
+  syncedAt   DateTime @default(now()) @map("synced_at")
+  tasks      Task[]
+
+  @@map("agents")
+}
+
+enum TaskStatus {
+  ready
+  running
+  completed
+  failed
+}
+
+enum ScheduleType {
+  cron
+  interval
+}
+
+enum RunTrigger {
+  manual
+  schedule
+}
+
+enum RunStatus {
+  queued
+  running
+  succeeded
+  failed
+  timed_out
+  cancelled
+}
+
+model Task {
+  id                  String        @id @default(cuid())
+  name                String
+  description         String?
+  prompt              String
+  agentId             String        @map("agent_id")
+  agent               Agent         @relation(fields: [agentId], references: [id])
+  workspacePath       String?       @map("workspace_path")
+  status              TaskStatus    @default(ready)
+  repeatable          Boolean       @default(true)
+  scheduleEnabled     Boolean       @default(false) @map("schedule_enabled")
+  scheduleType        ScheduleType? @map("schedule_type")
+  scheduleExpr        String?       @map("schedule_expr")
+  openclawCronJobId   String?       @map("openclaw_cron_job_id")
+  model               String?
+  thinking            String?
+  timeoutSeconds      Int?          @map("timeout_seconds")
+  lastRunAt           DateTime?     @map("last_run_at")
+  nextRunAt           DateTime?     @map("next_run_at")
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
+  runs                TaskRun[]
+
+  @@index([agentId])
+  @@index([status])
+  @@map("tasks")
+}
+
+model TaskRun {
+  id              String     @id @default(cuid())
+  taskId          String     @map("task_id")
+  task            Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  trigger         RunTrigger
+  status          RunStatus  @default(queued)
+  openclawTaskId  String?    @map("openclaw_task_id")
+  openclawRunId   String?    @map("openclaw_run_id")
+  summary         String?
+  error           String?
+  startedAt       DateTime   @default(now()) @map("started_at")
+  completedAt     DateTime?  @map("completed_at")
+
+  @@index([taskId])
+  @@index([status])
+  @@map("task_runs")
+}
