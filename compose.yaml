@@ -1,4 +1,5 @@
-# Primary compose file — kept in sync with compose.yaml for Coolify compatibility
+# Coolify / Docker Compose entry point (alias for docker-compose.yml)
+# https://github.com/cvmn91710/clawdashboard
 
 services:
   clawdashboard:

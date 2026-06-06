@@ -49,11 +49,12 @@ gh repo create clawdashboard --public --source=. --remote=origin --push
 
 1. In Coolify → **Sources**, connect your GitHub account (OAuth app).
 2. **+ New Resource** → **Docker Compose** → pick this repository and branch `main`.
-3. Set **Base Directory** to `/` (repo root — `docker-compose.yml` is at the top level).
-4. Enable **Auto Deploy** (Coolify adds a GitHub webhook on push).
-5. Add environment variables from [`.env.example`](.env.example) in the Coolify UI (never commit `.env`).
-6. Map persistent volumes: `pgdata`, `openclaw_config`, `workspaces`.
-7. Expose only port **3000** publicly.
+3. Set **Base Directory** to `/` (repo root).
+4. Set **Docker Compose file** to `compose.yaml` (or `docker-compose.yml` — both are at the repo root).
+5. Enable **Auto Deploy** (Coolify adds a GitHub webhook on push).
+6. Add environment variables from [`.env.example`](.env.example) in the Coolify UI (never commit `.env` — the compose files use `${VAR}` placeholders, not `env_file`).
+7. Map persistent volumes: `pgdata`, `openclaw_config`, `workspaces`.
+8. Expose only port **3000** publicly.
 
 On first deploy, seed agents once:
 
